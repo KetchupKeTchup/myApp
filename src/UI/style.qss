@@ -1,0 +1,52 @@
+/* --- Секція Харчування (FoodUi) --- */
+
+QLabel#calories_main {
+    font-size: 64px; 
+    font-weight: bold; 
+    color: #ffffff;
+}
+
+QLabel#calories_subtitle {
+    font-size: 18px; 
+    color: #888888;
+}
+
+QProgressBar#calories_progress { 
+    background-color: #2a2a2a; 
+    border-radius: 2px; 
+}
+QProgressBar#calories_progress::chunk { 
+    background-color: #ff7043; 
+    border-radius: 2px; 
+}
+
+QLineEdit#food_input {
+    background-color: #1e1e1e; 
+    border: 1px solid #333333;
+    border-radius: 22px; 
+    padding-left: 20px; 
+    color: #ffffff; 
+    font-size: 14px;
+}
+
+QPushButton#btn_add {
+    background-color: #1e1e1e; 
+    border: 1px solid #333333;
+    border-radius: 22px; 
+    color: #ff7043; 
+    font-size: 24px;
+}
+QPushButton#btn_add:hover { 
+    background-color: #2a2a2a; 
+}
+
+QLabel[cssClass="macro_name"] {
+    color: #888888; 
+    font-size: 12px;
+}
+
+QLabel[cssClass="macro_val"] {
+    color: #ffffff; 
+    font-size: 24px; 
+    font-weight: bold;
+}
