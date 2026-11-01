@@ -1,4 +1,12 @@
+/* --- Main Window --- */
+QWidget#central_widget {
+    background-color: #121212; 
+    color: white; 
+    border-radius: 10px;
+}
+
 /* --- Секція Харчування (FoodUi) --- */
+
 
 QLabel#calories_main {
     font-size: 64px; 
@@ -28,25 +36,66 @@ QLineEdit#food_input {
     color: #ffffff; 
     font-size: 14px;
 }
+QLineEdit#input_style{
+    background-color: #2a2a2a; 
+    border: 1px solid #444; 
+    border-radius: 5px; 
+    padding: 5px;
+}
 
 QPushButton#btn_add {
     background-color: #1e1e1e; 
     border: 1px solid #333333;
     border-radius: 22px; 
     color: #ff7043; 
-    font-size: 24px;
+    font-size: 16px; 
+    font-weight: bold;
+    padding-left: 20px; 
+    padding-right: 20px;
 }
 QPushButton#btn_add:hover { 
     background-color: #2a2a2a; 
 }
 
+
+
+/* -------------------------------QScrollArea--------------------------------- */
+
+/* Стилізація контейнера QScrollArea */
+QScrollArea#scroll_area{
+    border: 5px solid #3c3939; 
+    border-radius: 25px;
+    background-color: #121212; 
+    padding: 15px;
+}
+QWidget#meals_container {
+    background-color: #121212; 
+}
+
+
+/* -------------------------------Макроелементи--------------------------------- */
+
+QWidget#macro_conteiner {
+    background: qlineargradient(
+        x1:0, y1:0, 
+        x2:1, y2:1, 
+        stop:0 #8b8a8a, 
+        stop:1 #ac590c);
+    margin: 0px; 
+    border-radius: 25px;
+}
+
 QLabel[cssClass="macro_name"] {
-    color: #888888; 
-    font-size: 12px;
+    color: #dad0d0; 
+    font-weight: bold;
+    font-size: 16px;
+    background-color: transparent;
 }
 
 QLabel[cssClass="macro_val"] {
     color: #ffffff; 
     font-size: 24px; 
     font-weight: bold;
+    background-color: transparent;
 }
+

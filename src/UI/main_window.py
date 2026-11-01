@@ -1,4 +1,16 @@
 # src/UI/main_window.py
+"""
+    Головний екран прграми. Створення головного екрана і бокового сайдбару, 
+
+    _setup_sidebar() - Безпосередньо створює ліву панель шириною 70px з кнопками. 
+    Кнопки - точки входу, сигнали підключаються через контролер
+
+    _setup_workspace() - Створює QStackedWidget і додає його на головний екран, це контейнер екранів, де одночасно видно лише один, дає перемикання модулів без перемикання вікон.
+
+    add_module_view(widget) - Додає віджет у стек і повертає його індекс. Реєстрація екрана модулем, індекс потім використовується для switch_to_view.
+
+    switch_to_view(index) - викликає setCurrentIndex(index). Безпосередньо перемикає видимий екран, викликається із контролера.
+"""
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QStackedWidget
 from PyQt6.QtCore import Qt
 
@@ -7,13 +19,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("AnFin - Головне вікно")
         self.setGeometry(100, 100, 1000, 700)
-        
-        # Встановлюємо загальний темний фон для вікна
-        self.setStyleSheet("background-color: #121212; color: white;")
 
         # 1. Головний віджет, який займає все вікно
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
+        self.central_widget.setObjectName("central_widget")
         
         # 2. Головний макет
         self.main_layout = QHBoxLayout(self.central_widget)
@@ -45,7 +55,20 @@ class MainWindow(QMainWindow):
             border-left: 3px solid #ff7043;
         """)
 
+        # Підготовка для другої кнопки
+        self.btn_food_viev = QPushButton("2")
+        self.btn_food_viev.setFixedSize(50, 50)
+        self.btn_food_viev.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_food_viev.setStyleSheet("""
+                    background: transparent; 
+                    border: none; 
+                    font-size: 24px; 
+                    color: #ff7043; 
+                    border-left: 3px solid #ff7043;
+                """)
+
         sidebar_layout.addWidget(self.btn_food, alignment=Qt.AlignmentFlag.AlignHCenter)
+        sidebar_layout.addWidget(self.btn_food_viev, alignment=Qt.AlignmentFlag.AlignHCenter)
         sidebar_layout.addStretch() 
         
         self.main_layout.addWidget(self.sidebar)

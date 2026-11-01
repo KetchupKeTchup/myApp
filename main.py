@@ -1,40 +1,32 @@
 import sys
 from PyQt6.QtWidgets import QApplication
 from src.UI.main_window import MainWindow
-from src.foodrate.FoodUi import FoodUi  # Імпортуємо наш новий екран
-
-
-def load_styles(style):
-    """
-            Download styles
-            :param style:
-            :return:
-    """
-    try:
-        with open("src/UI/style.qss", "r", encoding="utf-8") as style_file:
-            style_content = style_file.read()
-            style.setStyleSheet(style_content)
-    except FileNotFoundError:
-        print("⚠️ Файл стилів style.qss не знайдено! Використовується стандартна тема.")
+from src.foodrate.FoodController import FoodController
+"""
+    main() - Це єдина точка входу, яка збирає всі шари до єдиного купи. 
+    Тут створюється QApplication(sys.argv) це фундамент графічної програми, він діє як двигун.
+"""
 
 def main():
-
-    
     app = QApplication(sys.argv)
+    
+    # Підключаємо стилі
+    try:
+        with open("src/UI/style.qss", "r", encoding="utf-8") as f:
+            app.setStyleSheet(f.read())
+    except FileNotFoundError:
+        print("Помилка: style.qss не знайдено!")
     
     # 1. Створюємо оболонку
     window = MainWindow()
     
-    # 2. Створюємо екран харчування
-    food_screen = FoodUi()
+    # 2. Створюємо контролер (він сам створить FoodUi і вставить його у вікно)
+    food_controller = FoodController(window)
     
-    # 3. Вставляємо екран харчування в робочу зону оболонки
-    window.add_module_view(food_screen)
-    load_styles(app)
+    # 3. Показуємо екран харчування першим
+    window.switch_to_view(food_controller.view_index)
     
-    # Показуємо все на екрані
     window.show()
-    
     sys.exit(app.exec())
 
 if __name__ == "__main__":

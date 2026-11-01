@@ -1,3 +1,14 @@
+
+"""
+    Сервіси програми, логіка 
+
+    add_product(product,mass,kkal,protein,sacharidy,fat) - перераховує 100 грамів на порцію, вводимо дані на 100 грамів а запис і вивід порції
+
+    get_all_products() - повертає список продуктів з бази даних
+
+    get_total_calories() - повертає загальну кількість калорій, білків, вуглеводів та жирів за сьогоднішній день
+"""
+
 from src.database.FoodKkal import FoodKkalManager
 
 class FoodService:
@@ -16,13 +27,10 @@ class FoodService:
         # Повертає список продуктів з бази даних
         return self.food_manager.get_all_products()
 
-    def get_total_calories(self):
+    def get_total_calories_today(self):
         # Повертає загальну кількість калорій, білків, вуглеводів та жирів за сьогоднішній день
-        return self.food_manager.get_total_calories()
-
-    def get_total_calories_only(self):
-        # Повертає загальну кількість калорій за сьогоднішній день
-        return self.food_manager.get_total_calories_only()
+        # Можна використати для повернення тільки калорій.
+        return self.food_manager.get_total_calories_today()
 
     def get_calories_protein_for_dashboard(self):
         # Повертає загальну кількість калорій та білків за сьогоднішній день

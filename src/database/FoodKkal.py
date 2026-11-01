@@ -48,37 +48,17 @@ class FoodKkalManager(DatabaseManager):
             cursor.execute('SELECT * FROM food_kkal')
             return cursor.fetchall()
 
-    def get_total_calories(self, date=None):
+    def get_total_calories_today(self, date=None):
         """Потрібно брати дані за конкретний день, а не за всі дні"""
         if date is None:
             date = datetime.now().strftime("%Y-%m-%d")
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*), SUM(kkal * mass / 100) AS total_kkal, " \
-                                  "SUM(protein * mass / 100) AS total_protein, " \
-                                  "SUM(sacharidy * mass / 100) AS total_sacharidy, " \
-                                  "SUM(fat * mass / 100) AS total_fat " \
+            cursor.execute("SELECT COUNT(*), SUM(kkal) AS total_kkal, " \
+                                  "SUM(protein) AS total_protein, " \
+                                  "SUM(sacharidy) AS total_sacharidy, " \
+                                  "SUM(fat) AS total_fat " \
                             "FROM food_kkal WHERE date(date_added) = date(?)", (date,))
             return cursor.fetchone()
-    
-    def get_total_calories_only(self, date=None):
-        if date is None:
-            date = datetime.now().strftime("%Y-%m-%d")
 
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*), SUM(kkal * mass / 100) FROM food_kkal WHERE date(date_added) = date(?)", (date,))
-            return cursor.fetchone()
-
-
-    def get_calories_protein_for_dashboard(self, date=None):
-        if date is None:
-            date = datetime.now().strftime("%Y-%m-%d")
-
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT SUM(kkal * mass /100) AS total_kkal, SUM(protein * mass / 100) AS total_protein " \
-                            "FROM food_kkal WHERE date(date_added) = date(?)", (date,))
-
-            return cursor.fetchone()
