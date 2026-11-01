@@ -1,6 +1,6 @@
 
 # src/foodrate/FoodUi.py
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QProgressBar,QDialog,QFormLayout,QDialogButtonBox, QScrollArea
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QProgressBar,QDialog,QFormLayout,QDialogButtonBox, QTableWidget
 
 from PyQt6.QtCore import Qt
 
@@ -70,30 +70,35 @@ class FoodUi(QWidget):
         parent_layout.addSpacing(5) 
     
     def _setup_meals_section(self, parent_layout):
-        """Блок 3: Контейнер для списку з'їденого з можливістю прокрутки"""
+        """таблиця продуктів, які були додані"""
         
-        # Створюємо зону прокрутки
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff) # Вертикальна прокрутка відключенна
-        self.scroll_area.setWidgetResizable(True)# Дозволяє внутрішньому контенту стискатися/розтягуватися
-        self.scroll_area.setObjectName("scroll_area")# Задаємо стилі для скролбару (щоб він був темним і красивим, без білих рамок)
-        self.scroll_area.setFixedHeight(350) # Фіксуємо висоту зони прокрутки, щоб вона не розтягувалась на весь екран
+        self.meals_table = QTableWidget()
+        self.meals_table.setColumnCount(6)
+        self.meals_table.setHorizontalHeaderLabels(["Назва", "Вага (г)", "Ккал", "Білки", "Вуглеводи", "Жири"])  
+        self.meals_table.setObjectName("meals_table") 
 
-        #Створюємо внутрішній віджет (це буде "полотно", яке прокручується)
-        self.meals_container = QWidget()
-        self.meals_container.setObjectName("meals_container")
-        
-        # Створюємо наш старий знайомий макет і прив'язуємо його до "полотна"
-        self.meals_layout = QVBoxLayout(self.meals_container)
-        self.meals_layout.setAlignment(Qt.AlignmentFlag.AlignTop) # Притискаємо всі продукти догори
-        self.meals_layout.setSpacing(10) # Відстань між продуктами
+        # Поведіння таблиці
+        for i in range(1, 6):
+            self.meals_table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeMode.Fixed)  # Фіксуємо ширину колонок з 1 по 5
+        self.meals_table.setColumnWidth(1, 90)  # Вага
+        self.meals_table.setColumnWidth(2, 90)  # Ккал
+        self.meals_table.setColumnWidth(3, 80)  # Білки
+        self.meals_table.setColumnWidth(4, 80)  # Вуглеводи
+        self.meals_table.setColumnWidth(5, 80)  # Жири
+        self.meals_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
 
-        #  Кладемо "полотно" всередину зони прокрутки
-        self.scroll_area.setWidget(self.meals_container)
+        # Приховує ліву колонку з номерами рядків
+        self.meals_table.verticalHeader().setVisible(False)
 
-        #  Додаємо зону прокрутки на головний екран
-        parent_layout.addWidget(self.scroll_area)
+        # Виділення всього рядка при настисканні на будь яке місце
+        self.meals_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+
+        # прибирає аутлайн
+        self.meals_table.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+        parent_layout.addWidget(self.meals_table)
         parent_layout.addSpacing(10)
+        
     
     def _setup_macros_section(self, parent_layout):
         # Блок 4: Відображення макронутрієнтів (білки, вуглеводи, жири)
@@ -132,19 +137,6 @@ class FoodUi(QWidget):
         m_layout.addWidget(m_container)
         parent_layout.addLayout(m_layout)
         return m_val
-
-    def clear_meals_layout(self):
-            """Очищує список продуктів перед його оновлення, щоб не було дублікатів"""
-            while self.meals_layout.count():
-                child = self.meals_layout.takeAt(0) 
-                if child.widget():
-                    child.widget().deleteLater()
-                elif child.layout():
-                    while child.layout().count():
-                        sub_child = child.layout().takeAt(0)
-                        if sub_child.widget():
-                            sub_child.widget().deleteLater()
-                    child.layout().deleteLater()
 
 class AddProductDialog(QDialog):
     # Діалогове вікно для додавання нового продукту

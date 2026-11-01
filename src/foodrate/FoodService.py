@@ -21,6 +21,7 @@ class FoodService:
         total_sacharidy = (sacharidy * mass) / 100
         total_fat = (fat * mass) / 100
 
+
         self.food_manager.add_product(product, mass, total_kkal, total_protein, total_sacharidy, total_fat)
 
     def get_all_products(self):

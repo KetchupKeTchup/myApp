@@ -14,7 +14,7 @@
 """
 
 
-from PyQt6.QtWidgets import QMessageBox, QHBoxLayout, QLabel
+from PyQt6.QtWidgets import QMessageBox, QHBoxLayout, QLabel, QTableWidgetItem
 from src.foodrate.FoodService import FoodService
 from src.foodrate.FoodUi import FoodUi, AddProductDialog
 from datetime import datetime
@@ -64,33 +64,27 @@ class FoodController:
         self.update_meals_list()
 
     def update_meals_list(self):
-        """Створення списку з'їденого за сьогодні"""
-        self.ui.clear_meals_layout()
+        """Заповнення таблиці продуктів"""
+        self.ui.meals_table.setRowCount(0)  # Очищуємо таблицю
 
         products = self.service.get_all_products()
         today_str = datetime.now().strftime("%Y-%m-%d")
 
+        row_index = 0 # Індекс рядка для таблиці
+
         for p in products:
             # p = (id, назва, вага, ккал, білки, вугл, жири, дата)
             if today_str in p[7]: 
-                meal_row = QHBoxLayout()
-                
-                lbl_name = QLabel(p[1])
-                lbl_name.setStyleSheet("font-size: 14px; color: #ffffff; width: 120px;")
-                
-                lbl_mass = QLabel(f"• {p[2]}g")
-                lbl_mass.setStyleSheet("font-size: 12px; color: #888888;")
-                
-                lbl_kcal = QLabel(f"• {p[3]:.0f} kcal")
-                lbl_kcal.setStyleSheet("font-size: 12px; color: #ff7043;")
-                
-                meal_row.addWidget(lbl_name)
-                meal_row.addWidget(lbl_mass)
-                meal_row.addWidget(lbl_kcal)
-                meal_row.addStretch()
-                
-                self.ui.meals_layout.addLayout(meal_row)
+                self.ui.meals_table.insertRow(row_index)
+                # Заповнюємо рядки таблиці, таблиця приймає QTableWidgetItem тільки текст
+                self.ui.meals_table.setItem(row_index, 0, QTableWidgetItem(p[1]))  # Назва
+                self.ui.meals_table.setItem(row_index, 1, QTableWidgetItem(f"{p[2]}g"))  # Вага
+                self.ui.meals_table.setItem(row_index, 2, QTableWidgetItem(f"{p[3]:.0f} kcal"))  # Ккал
+                self.ui.meals_table.setItem(row_index, 3, QTableWidgetItem(f"{p[4]}g"))  # Білки
+                self.ui.meals_table.setItem(row_index, 4, QTableWidgetItem(f"{p[5]}g"))  # Вуглеводи
+                self.ui.meals_table.setItem(row_index, 5, QTableWidgetItem(f"{p[6]}g"))  # Жири
 
+        row_index += 1
 
 
     def handle_add_button(self):
