@@ -5,6 +5,20 @@ QWidget#central_widget {
     border-radius: 10px;
 }
 
+/* --- left sidebar --- */
+QFrame#sidebar {
+    background-color: #1a1a1a; border-right: 1px solid #2a2a2a
+}
+/* --- Кнопки--- */
+QPushButton#btn_food, QPushButton#btn_food_viev {
+    border: none;
+    border-left: 3px solid #ff7043; 
+    background-color: transparent; 
+    font-size: 24px; 
+    margin: 0px;
+    padding: 0px;
+}
+
 /* --- Секція Харчування (FoodUi) --- */
 
 
@@ -77,10 +91,14 @@ QWidget#meals_container {
 
 QWidget#macro_conteiner {
     background: qlineargradient(
-        x1:0, y1:0, 
-        x2:1, y2:1, 
-        stop:0 #8b8a8a, 
-        stop:1 #ac590c);
+        x1:1, y1:0.2, 
+        x2:0.2, y2:1, 
+        stop:0 transparent, 
+        stop:0.25 #1a1a1a,
+        stop:0.5 #2a2a2a,
+        stop:0.75 #3a3a3a,
+        stop:1 #636666
+        );
     margin: 0px; 
     border-radius: 25px;
 }

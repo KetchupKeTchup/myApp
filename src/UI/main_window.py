@@ -37,36 +37,25 @@ class MainWindow(QMainWindow):
     def _setup_sidebar(self):
         """Створює ліве бокове меню"""
         self.sidebar = QFrame()
-        self.sidebar.setFixedWidth(70)
-        self.sidebar.setStyleSheet("background-color: #1a1a1a; border-right: 1px solid #2a2a2a;")
+        self.sidebar.setFixedWidth(80)
+        self.sidebar.setObjectName("sidebar")
         
         sidebar_layout = QVBoxLayout(self.sidebar)
-        sidebar_layout.setContentsMargins(0, 20, 0, 20)
+        sidebar_layout.setContentsMargins(0, 30, 0, 20)
         
         # Кнопка Харчування
         self.btn_food = QPushButton("🍴")
         self.btn_food.setFixedSize(50, 50)
         self.btn_food.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.btn_food.setStyleSheet("""
-            background: transparent; 
-            border: none; 
-            font-size: 24px; 
-            color: #ff7043; 
-            border-left: 3px solid #ff7043;
-        """)
+        self.btn_food.setObjectName("btn_food")
+        
 
         # Підготовка для другої кнопки
-        self.btn_food_viev = QPushButton("2")
+        self.btn_food_viev = QPushButton("👁️")
         self.btn_food_viev.setFixedSize(50, 50)
         self.btn_food_viev.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.btn_food_viev.setStyleSheet("""
-                    background: transparent; 
-                    border: none; 
-                    font-size: 24px; 
-                    color: #ff7043; 
-                    border-left: 3px solid #ff7043;
-                """)
-
+        self.btn_food_viev.setObjectName("btn_food_viev")
+        
         sidebar_layout.addWidget(self.btn_food, alignment=Qt.AlignmentFlag.AlignHCenter)
         sidebar_layout.addWidget(self.btn_food_viev, alignment=Qt.AlignmentFlag.AlignHCenter)
         sidebar_layout.addStretch() 

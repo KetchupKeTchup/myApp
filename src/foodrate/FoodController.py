@@ -13,7 +13,7 @@
 
 """
 
-
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox, QHBoxLayout, QLabel, QTableWidgetItem
 from src.foodrate.FoodService import FoodService
 from src.foodrate.FoodUi import FoodUi, AddProductDialog
@@ -75,9 +75,12 @@ class FoodController:
         for p in products:
             # p = (id, назва, вага, ккал, білки, вугл, жири, дата)
             if today_str in p[7]: 
+                name_item = QTableWidgetItem(str(p[1]))
+                name_item.setData(Qt.ItemDataRole.UserRole, p[0])  # Зберігаємо ID продукту у UserRole
                 self.ui.meals_table.insertRow(row_index)
                 # Заповнюємо рядки таблиці, таблиця приймає QTableWidgetItem тільки текст
-                self.ui.meals_table.setItem(row_index, 0, QTableWidgetItem(p[1]))  # Назва
+                self.ui.meals_table.setItem(row_index, 0, name_item)  
+                # self.ui.meals_table.setItem(row_index, 0, QTableWidgetItem(p[1]))  # Назва
                 self.ui.meals_table.setItem(row_index, 1, QTableWidgetItem(f"{p[2]}g"))  # Вага
                 self.ui.meals_table.setItem(row_index, 2, QTableWidgetItem(f"{p[3]:.0f} kcal"))  # Ккал
                 self.ui.meals_table.setItem(row_index, 3, QTableWidgetItem(f"{p[4]}g"))  # Білки
@@ -85,7 +88,6 @@ class FoodController:
                 self.ui.meals_table.setItem(row_index, 5, QTableWidgetItem(f"{p[6]}g"))  # Жири
 
         row_index += 1
-
 
     def handle_add_button(self):
         """Просто відкриваємо вікно без попередніх перевірок"""

@@ -24,6 +24,15 @@ class FoodService:
 
         self.food_manager.add_product(product, mass, total_kkal, total_protein, total_sacharidy, total_fat)
 
+    def edit_product(self, product_id, product, mass, kkal, protein, sacharidy, fat):
+        """ Редагування запису"""
+        total_kkal = (kkal * mass) / 100
+        total_protein = (protein * mass) / 100
+        total_sacharidy = (sacharidy * mass) / 100
+        total_fat = (fat * mass) / 100
+
+        self.food_manager.edit_product(product_id, product, mass, total_kkal, total_protein, total_sacharidy, total_fat)
+
     def get_all_products(self):
         # Повертає список продуктів з бази даних
         return self.food_manager.get_all_products()
@@ -33,9 +42,10 @@ class FoodService:
         # Можна використати для повернення тільки калорій.
         return self.food_manager.get_total_calories_today()
 
-    def get_calories_protein_for_dashboard(self):
-        # Повертає загальну кількість калорій та білків за сьогоднішній день
-        return self.food_manager.get_calories_protein_for_dashboard()
+
+    def delete_product(self, product_id):
+        # Видаляє продукт з бази даних за його ID
+        self.food_manager.delete_product(product_id)
 
 
 

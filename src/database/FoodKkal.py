@@ -3,6 +3,7 @@ import os
 import sys 
 from datetime import datetime
 from src.database.db_manager import DatabaseManager
+from contextlib import closing
 
 class FoodKkalManager(DatabaseManager):
     def __init__(self, db_path = None):
@@ -62,3 +63,20 @@ class FoodKkalManager(DatabaseManager):
                             "FROM food_kkal WHERE date(date_added) = date(?)", (date,))
             return cursor.fetchone()
 
+    def delete_product(self, product_id):
+        """Видаляє продукт з бази даних за його ID"""
+        with closing(self.get_connection()) as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM food_kkal WHERE id = ?", (product_id,)) 
+            conn.commit()
+
+    def edit_product(self, product_id, product, mass, kkal, protein, sacharidy, fat, comment=None):
+        """Редагує продукт у базі даних за його ID"""
+        with closing(self.get_connection()) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE food_kkal
+                SET product = ?, mass = ?, kkal = ?, protein = ?, sacharidy = ?, fat = ?, comment = ?
+                WHERE id = ?
+            ''', (product, mass, kkal, protein, sacharidy, fat, comment, product_id))
+            conn.commit()
