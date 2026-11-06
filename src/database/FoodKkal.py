@@ -32,7 +32,7 @@ class FoodKkalManager(DatabaseManager):
     def add_product(self, product, mass, kkal, protein, sacharidy, fat, comment=None):
         date_added = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-        with self.get_connection() as conn:
+        with closing(self.get_connection()) as conn:
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO food_kkal (product, mass, kkal, protein, sacharidy, fat, date_added, comment)
@@ -44,7 +44,7 @@ class FoodKkalManager(DatabaseManager):
             conn.commit()
 
     def get_all_products(self):
-        with self.get_connection() as conn:
+        with closing(self.get_connection()) as conn:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM food_kkal')
             return cursor.fetchall()
@@ -54,7 +54,7 @@ class FoodKkalManager(DatabaseManager):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%d")
 
-        with self.get_connection() as conn:
+        with closing(self.get_connection()) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*), SUM(kkal) AS total_kkal, " \
                                   "SUM(protein) AS total_protein, " \
@@ -80,3 +80,4 @@ class FoodKkalManager(DatabaseManager):
                 WHERE id = ?
             ''', (product, mass, kkal, protein, sacharidy, fat, comment, product_id))
             conn.commit()
+            return cursor.rowcount > 0 # Повертає True or False 

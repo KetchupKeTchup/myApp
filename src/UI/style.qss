@@ -76,12 +76,7 @@ QPushButton#btn_add:hover {
 /* -------------------------------QScrollArea--------------------------------- */
 
 /* Стилізація контейнера QScrollArea */
-QScrollArea#scroll_area{
-    border: 5px solid #3c3939; 
-    border-radius: 25px;
-    background-color: #121212; 
-    padding: 15px;
-}
+
 QWidget#meals_container {
     background-color: #121212; 
 }
@@ -150,3 +145,48 @@ QHeaderView::section {
     font-weight: bold;
     font-size: 12px;
 }
+
+
+
+
+
+QTableView {
+    border-radius: 5px;
+    background-color: #2b2b2b;      /* Колір фону порожнього місця */
+    alternate-background-color: #323232; /* Колір кожного другого рядка (зебра) */
+    border: 1px solid #444444;      /* Зовнішня рамка таблиці */
+    color: #e0e0e0;                 /* Колір тексту */
+    gridline-color: #444444;        /* Колір сітки (якщо ви її увімкнете) */
+    selection-background-color: #c31111; /* Колір виділеного рядка (ваш червоний) */
+}
+
+/* 2. Стиль комірок (item) */
+QTableView::item {
+    padding-left: 10px;             /* Відступ тексту від лівого краю комірки */
+    padding-right: 10px;
+    border-bottom: 1px solid #3a3a3a; /* Нижня лінія для кожного рядка замість повної сітки */
+}
+
+/* 3. Коли користувач наводить мишку на рядок */
+QTableView::item:hover {
+    background-color: #3e3e3e;      /* Легке підсвічування сірим */
+}
+
+/* 4. Коли користувач клікнув на рядок */
+QTableView::item:selected {
+    background-color: #c31111;      /* Червоний фон при виділенні */
+    color: white;                   /* Білий текст для контрасту */
+    border: none;                   /* Прибираємо границі всередині виділення */
+}
+
+/* 5. Стиль верхніх заголовків (Колонки) */
+QHeaderView::section {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px;                   /* Відступи всередині заголовка */
+    border-radius: 5px;
+    margin-bottom: 5px;
+
+}
+

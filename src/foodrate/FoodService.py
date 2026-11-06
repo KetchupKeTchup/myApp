@@ -47,6 +47,9 @@ class FoodService:
         # Видаляє продукт з бази даних за його ID
         self.food_manager.delete_product(product_id)
 
+    def edit_record(self, product_id):
+        # Редагування запису
+        self.food_manager.edit_product(product_id)
 
 
 

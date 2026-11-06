@@ -17,6 +17,7 @@ class FoodUi(QWidget):
         self._setup_input_section(layout)
         self._setup_macros_section(layout)
         self._setup_meals_section(layout)
+        self._btn_filter(layout)
         
 
         layout.addStretch()  # Додаємо розтягування, щоб блоки були зверху
@@ -61,9 +62,15 @@ class FoodUi(QWidget):
         self.btn_add.setFixedHeight(45)
         # Зміна курсора миші на вказівний палець
         self.btn_add.setCursor(Qt.CursorShape.PointingHandCursor)   
+        
+        self.btn_add_menu = QPushButton("+ Додати страву")
+        self.btn_add_menu.setObjectName("btn_add")
+        self.btn_add_menu.setFixedHeight(45)
+        # Зміна курсора миші на вказівний палець
+        self.btn_add_menu.setCursor(Qt.CursorShape.PointingHandCursor)   
 
-        self.btn_layout.addStretch()
         self.btn_layout.addWidget(self.btn_add)
+        self.btn_layout.addWidget(self.btn_add_menu)
         self.btn_layout.addStretch()
         
         parent_layout.addLayout(self.btn_layout)
@@ -73,6 +80,7 @@ class FoodUi(QWidget):
         """таблиця продуктів, які були додані"""
         
         self.meals_table = QTableWidget()
+        self.meals_table.setFixedSize(1200,250)
         self.meals_table.setColumnCount(6)
         self.meals_table.setHorizontalHeaderLabels(["Назва", "Вага (г)", "Ккал", "Білки", "Вуглеводи", "Жири"])  
         self.meals_table.setObjectName("meals_table") 
@@ -83,7 +91,7 @@ class FoodUi(QWidget):
         self.meals_table.setColumnWidth(1, 90)  # Вага
         self.meals_table.setColumnWidth(2, 90)  # Ккал
         self.meals_table.setColumnWidth(3, 80)  # Білки
-        self.meals_table.setColumnWidth(4, 80)  # Вуглеводи
+        self.meals_table.setColumnWidth(4, 100)  # Вуглеводи
         self.meals_table.setColumnWidth(5, 80)  # Жири
         self.meals_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
 
@@ -99,7 +107,6 @@ class FoodUi(QWidget):
         parent_layout.addWidget(self.meals_table)
         parent_layout.addSpacing(10)
         
-    
     def _setup_macros_section(self, parent_layout):
         # Блок 4: Відображення макронутрієнтів (білки, вуглеводи, жири)
         self.macros_style = QWidget()
@@ -117,10 +124,12 @@ class FoodUi(QWidget):
     def _create_macro_widget(self, name, default_value, parent_layout):
         # Створює віджет для макронутрієнта (назва + значення) і додає його в батьківський макет
         m_layout = QHBoxLayout()
+        m_layout.setContentsMargins(0,0,0,0)
         
         m_container = QWidget()
         m_container.setObjectName("macro_conteiner")
         m_container.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # Дозволяє стилізувати фон віджета через QSS
+        
 
         m_container_layout = QVBoxLayout(m_container)
 
@@ -137,6 +146,24 @@ class FoodUi(QWidget):
         m_layout.addWidget(m_container)
         parent_layout.addLayout(m_layout)
         return m_val
+
+    def _btn_filter(self,paren_layout):
+        btn_QH_layout = QHBoxLayout()
+
+        self.btn_today = QPushButton("За сьогодні")
+        self.btn_today.setProperty("cssClass", "btn_filter")
+        self.btn_today.setFixedSize(200,35)
+        
+        self.btn_week = QPushButton("За тиждень")
+        self.btn_week.setProperty("cssClass", "btn_filter")
+        self.btn_week.setFixedSize(200,35)
+
+        btn_QH_layout.addStretch()
+        btn_QH_layout.setContentsMargins(0,0,0,0)
+        btn_QH_layout.addWidget(self.btn_today)
+        btn_QH_layout.addWidget(self.btn_week)
+
+        paren_layout.addLayout(btn_QH_layout)
 
 class AddProductDialog(QDialog):
     # Діалогове вікно для додавання нового продукту
@@ -194,6 +221,37 @@ class AddProductDialog(QDialog):
             )
         except ValueError:
             return None
+
+class EditProductDialog(QDialog):
+    """Вікно для редагування записів"""
+
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.current_product_data = []
+        self.new_product_data = []
+
+        self.setWindowTitle("Редагувати продукт")
+        self.setFixedSize(500,600)
+
+        self.layout = QFormLayout(self)
+
+        self.type_name = QLineEdit()
+        self.type_name.setPlaceholderText("Назва продукта")
+
+        self.mass_input = QLineEdit("")
+        self.mass_input.setPlaceholderText("Вага: ")
+        
+        self.kkal_input = QLineEdit("")
+        self.kkal_input.setPlaceholderText("Калорійність: ")
+        
+        self.prot_input = QLineEdit("")
+        self.prot_input.setPlaceholderText("Білок: ")
+        
+        self.carbs_input = QLineEdit("")
+        self.carbs_input.setPlaceholderText("Вугливоди: ")
+        
+        self.fat_input = QLineEdit("")
+        self.fat_input.setPlaceholderText("Жири: ")
 
 
     

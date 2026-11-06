@@ -14,10 +14,10 @@
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMessageBox, QHBoxLayout, QLabel, QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem,QMenu
 from src.foodrate.FoodService import FoodService
 from src.foodrate.FoodUi import FoodUi, AddProductDialog
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class FoodController:
@@ -26,12 +26,23 @@ class FoodController:
         self.ui = FoodUi()
         self.main_window = main_window
 
+        #-------------- filter -----------------------
+        # Стандартне значення фільтра
+        self.current_filter = "today"
+        self.ui.btn_today.clicked.connect(self.set_filter_today)
+        self.ui.btn_week.clicked.connect(self.set_filter_week)
+
         # Додаємо екран у головне вікно і запам'ятовуємо його індекс
         self.view_index = self.main_window.add_module_view(self.ui)
 
-        # Сигнали підключаємо
+        # ------------------ Сигнали ----------------------
         self.main_window.btn_food.clicked.connect(self.show_module)
-        self.ui.btn_add.clicked.connect(self.handle_add_button)
+        self.ui.btn_add.clicked.connect(self.handle_add_button) # Сигнал для кнопки додати продукт
+        
+        # Сигнал для контекстного меню таблиці
+        self.ui.meals_table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.ui.meals_table.customContextMenuRequested.connect(self.show_context_menu)
+        
 
         self.update_dashboard()
 
@@ -68,26 +79,47 @@ class FoodController:
         self.ui.meals_table.setRowCount(0)  # Очищуємо таблицю
 
         products = self.service.get_all_products()
+
+        # Вираховуємо дату
+        now = datetime.now()
         today_str = datetime.now().strftime("%Y-%m-%d")
+        week_ago = now - timedelta(days=7)
 
+        show_record = False
+        
         row_index = 0 # Індекс рядка для таблиці
-
+        
         for p in products:
-            # p = (id, назва, вага, ккал, білки, вугл, жири, дата)
-            if today_str in p[7]: 
-                name_item = QTableWidgetItem(str(p[1]))
-                name_item.setData(Qt.ItemDataRole.UserRole, p[0])  # Зберігаємо ID продукту у UserRole
-                self.ui.meals_table.insertRow(row_index)
-                # Заповнюємо рядки таблиці, таблиця приймає QTableWidgetItem тільки текст
-                self.ui.meals_table.setItem(row_index, 0, name_item)  
-                # self.ui.meals_table.setItem(row_index, 0, QTableWidgetItem(p[1]))  # Назва
-                self.ui.meals_table.setItem(row_index, 1, QTableWidgetItem(f"{p[2]}g"))  # Вага
-                self.ui.meals_table.setItem(row_index, 2, QTableWidgetItem(f"{p[3]:.0f} kcal"))  # Ккал
-                self.ui.meals_table.setItem(row_index, 3, QTableWidgetItem(f"{p[4]}g"))  # Білки
-                self.ui.meals_table.setItem(row_index, 4, QTableWidgetItem(f"{p[5]}g"))  # Вуглеводи
-                self.ui.meals_table.setItem(row_index, 5, QTableWidgetItem(f"{p[6]}g"))  # Жири
+            record_date_str = str(p[7])
 
-        row_index += 1
+            if self.current_filter == "today":
+                if today_str in record_date_str:
+                    show_record = True
+            elif self.current_filter == "week":
+                try:
+                    # Обрізаємо перші 10 символів (YYYY-MM-DD), щоб порівняти дати
+                    record_date = datetime.strptime(record_date_str[:10], "%Y-%m-%d")
+                    # Якщо дата запису лежить між (сьогодні - 7 днів) та сьогодні
+                    if week_ago.date() <= record_date.date() <= now.date():
+                        show_record = True
+                except ValueError:
+                    pass
+
+            # p = (id, назва, вага, ккал, білки, вугл, жири, дата)
+            if show_record:
+                name_item = QTableWidgetItem(str(p[1]))
+                name_item.setData(Qt.ItemDataRole.UserRole, p[0])
+                
+                self.ui.meals_table.insertRow(row_index)
+                
+                self.ui.meals_table.setItem(row_index, 0, name_item)  
+                self.ui.meals_table.setItem(row_index, 1, QTableWidgetItem(f"{p[2]}g"))  
+                self.ui.meals_table.setItem(row_index, 2, QTableWidgetItem(f"{p[3]:.0f} kcal"))  
+                self.ui.meals_table.setItem(row_index, 3, QTableWidgetItem(f"{p[4]}g"))  
+                self.ui.meals_table.setItem(row_index, 4, QTableWidgetItem(f"{p[5]}g"))  
+                self.ui.meals_table.setItem(row_index, 5, QTableWidgetItem(f"{p[6]}g"))  
+                
+                row_index += 1
 
     def handle_add_button(self):
         """Просто відкриваємо вікно без попередніх перевірок"""
@@ -107,3 +139,72 @@ class FoodController:
             
             # Оновлюємо UI
             self.update_dashboard()
+
+    def show_context_menu(self, position):
+        """Відкриває контекстне меню при натисканні правої кнопки миші на таблиці"""
+
+       # Отримання індексу рядка, на якому було натиснуто
+        row_table = self.ui.meals_table.rowAt(position.y())
+        
+        if row_table < 0:
+            return
+
+        # Виділяємо весь рядок
+        self.ui.meals_table.selectRow(row_table)
+
+        # Створення меню 
+        menu = QMenu()
+
+        full_info = menu.addAction("Повна інформація")
+        edit_action = menu.addAction("Редагувати")
+        delete_action = menu.addAction("Видалити")
+
+        # Показати меню там де знаходиться курсор миші
+        action = menu.exec(self.ui.meals_table.viewport().mapToGlobal(position))
+
+        if action == full_info:
+            self.full_info(row_table)
+        if action == edit_action:
+            self.edit_action(row_table)
+        if action == delete_action:
+            self.delete_record(row_table)
+
+    def edit_action(self, row_table):
+        """Редагування записаного продукту"""
+        table_id_item = self.ui.meals_table.item(row_table, 0)
+        pass
+
+    def delete_record(self, row_table):
+        """Видалення запису"""
+        table_id_item = self.ui.meals_table.item(row_table, 0)
+
+        
+        if not table_id_item:
+            QMessageBox.warning("Помилка", "Невдалось видалити запис")
+            return 
+
+        # Отримання реального ID із бази 
+        real_id_record = table_id_item.data(Qt.ItemDataRole.UserRole)
+
+        reply = QMessageBox.question(
+            self.ui, "Видалення", f"Видалити?",
+            QMessageBox.StandardButton.Yes |
+            QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            self.service.delete_product(real_id_record)
+            self.update_dashboard()
+
+    def full_info(self, row_table):
+        rrr = row_table
+        QMessageBox.about(self.ui, "", f"В розробці")
+
+    def set_filter_today(self):
+        self.current_filter = 'today'
+        self.update_meals_list()
+
+    def set_filter_week(self):
+        self.current_filter = 'week'
+        self.update_meals_list()
+        

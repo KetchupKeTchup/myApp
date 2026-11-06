@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("AnFin - Головне вікно")
-        self.setGeometry(100, 100, 1000, 700)
+        self.setGeometry(100, 100, 1300, 700)
 
         # 1. Головний віджет, який займає все вікно
         self.central_widget = QWidget()
