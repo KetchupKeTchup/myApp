@@ -16,7 +16,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem,QMenu
 from src.foodrate.FoodService import FoodService
-from src.foodrate.FoodUi import FoodUi, AddProductDialog
+from src.foodrate.FoodUi import FoodUi, AddProductDialog, EditProductDialog
 from datetime import datetime, timedelta
 
 
@@ -105,7 +105,6 @@ class FoodController:
                 except ValueError:
                     pass
 
-            # p = (id, назва, вага, ккал, білки, вугл, жири, дата)
             if show_record:
                 name_item = QTableWidgetItem(str(p[1]))
                 name_item.setData(Qt.ItemDataRole.UserRole, p[0])
@@ -127,6 +126,7 @@ class FoodController:
         
         if dialog.exec():
             data = dialog.get_data()
+            
             if data is None:
                 QMessageBox.warning(self.ui, "Помилка", "Заповніть назву та введіть коректні числа!")
                 return
@@ -172,7 +172,9 @@ class FoodController:
     def edit_action(self, row_table):
         """Редагування записаного продукту"""
         table_id_item = self.ui.meals_table.item(row_table, 0)
-        pass
+        dialog_window = EditProductDialog(self.ui)
+        dialog_window.exec()# відкриття вікна
+        
 
     def delete_record(self, row_table):
         """Видалення запису"""

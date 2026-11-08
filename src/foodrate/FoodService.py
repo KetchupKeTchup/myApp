@@ -10,19 +10,25 @@
 """
 
 from src.database.FoodKkal import FoodKkalManager
+from src.database.products_db import ProductsManager
 
 class FoodService:
     def __init__(self):
         self.food_manager = FoodKkalManager()
+        self.product_manager = ProductsManager()
 
-    def add_product(self,product,mass,kkal,protein,sacharidy,fat):
+    def add_product(self,product,mass,kkal,protein,carbs,fat):
+        # Зберігаємо продукт в довідник продуктів (product_db)
+        # в цій перемінні буде id первинного ключа продукта щоб достати ім'я продукта    
+        product_id = self.product_manager.add_product(product, None, kkal, protein, carbs, fat, is_active = 'True')
+        
         total_kkal = (kkal * mass) / 100
         total_protein = (protein * mass) / 100
-        total_sacharidy = (sacharidy * mass) / 100
+        total_sacharidy = (carbs * mass) / 100
         total_fat = (fat * mass) / 100
 
 
-        self.food_manager.add_product(product, mass, total_kkal, total_protein, total_sacharidy, total_fat)
+        self.food_manager.add_product(product_id, mass, total_kkal, total_protein, total_sacharidy, total_fat)
 
     def edit_product(self, product_id, product, mass, kkal, protein, sacharidy, fat):
         """ Редагування запису"""

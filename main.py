@@ -1,4 +1,6 @@
 import sys
+import logging
+from utils.loger_config import setup_logging
 from PyQt6.QtWidgets import QApplication
 from src.UI.main_window import MainWindow
 from src.foodrate.FoodController import FoodController
@@ -6,6 +8,9 @@ from src.foodrate.FoodController import FoodController
     main() - Це єдина точка входу, яка збирає всі шари до єдиного купи. 
     Тут створюється QApplication(sys.argv) це фундамент графічної програми, він діє як двигун.
 """
+
+setup_logging()
+loger = logging.getLogger(__name__)
 
 def main():
     app = QApplication(sys.argv)

@@ -190,3 +190,17 @@ QHeaderView::section {
 
 }
 
+
+QDoubleSpinBox {
+    background-color: #0F0F12;
+    color: white;
+    border: 1px solid #2C2C2E;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 14px;
+    height: 20px;
+    width: 40px; 
+}
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button{
+    background-color: transparent;
+}

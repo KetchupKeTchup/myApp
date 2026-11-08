@@ -1,6 +1,6 @@
 
 # src/foodrate/FoodUi.py
-from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QProgressBar,QDialog,QFormLayout,QDialogButtonBox, QTableWidget
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QProgressBar,QDialog,QFormLayout,QDialogButtonBox, QTableWidget, QDoubleSpinBox
 
 from PyQt6.QtCore import Qt
 
@@ -57,7 +57,7 @@ class FoodUi(QWidget):
     def _setup_input_section(self,parent_layout):
         self.btn_layout = QHBoxLayout()
 
-        self.btn_add = QPushButton("+ Додати продукт")
+        self.btn_add = QPushButton("+ Додати прийом їжі")
         self.btn_add.setObjectName("btn_add")
         self.btn_add.setFixedHeight(45)
         # Зміна курсора миші на вказівний палець
@@ -69,8 +69,14 @@ class FoodUi(QWidget):
         # Зміна курсора миші на вказівний палець
         self.btn_add_menu.setCursor(Qt.CursorShape.PointingHandCursor)   
 
+        self.btn_add_product = QPushButton("+ Додати продукт")
+        self.btn_add_product.setObjectName("btn_add")
+        self.btn_add_product.setFixedHeight(45)
+        self.btn_add_product.setCursor(Qt.CursorShape.PointingHandCursor)   
+
         self.btn_layout.addWidget(self.btn_add)
         self.btn_layout.addWidget(self.btn_add_menu)
+        self.btn_layout.addWidget(self.btn_add_product)
         self.btn_layout.addStretch()
         
         parent_layout.addLayout(self.btn_layout)
@@ -166,7 +172,7 @@ class FoodUi(QWidget):
         paren_layout.addLayout(btn_QH_layout)
 
 class AddProductDialog(QDialog):
-    # Діалогове вікно для додавання нового продукту
+    # Діалогове вікно для додавання нового прийому їжі
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -181,11 +187,31 @@ class AddProductDialog(QDialog):
         self.name_input.setPlaceholderText("Молоко")
 
         # Поля для цифр
-        self.mass_input = QLineEdit("")
-        self.kkal_input = QLineEdit("")
-        self.prot_input = QLineEdit("")
-        self.carbs_input = QLineEdit("")
-        self.fat_input = QLineEdit("")
+        self.mass_input = QDoubleSpinBox()
+        self.mass_input.setSpecialValueText(" ")
+        self.mass_input.setMaximum(10000)
+        self.mass_input.setDecimals(0)
+        
+        self.kkal_input = QDoubleSpinBox()
+        self.kkal_input.setSpecialValueText(" ")
+        self.kkal_input.setMaximum(10000)
+        self.kkal_input.setDecimals(0)
+        
+        self.prot_input = QDoubleSpinBox()
+        self.prot_input.setSpecialValueText(" ")
+        self.prot_input.setMaximum(10000)
+        self.prot_input.setDecimals(0)
+
+        self.carbs_input = QDoubleSpinBox()
+        self.carbs_input.setSpecialValueText(" ")
+        self.carbs_input.setMaximum(10000)
+        self.carbs_input.setDecimals(0)
+
+        self.fat_input = QDoubleSpinBox()
+        self.fat_input.setSpecialValueText(" ")
+        self.fat_input.setMaximum(10000)
+        self.fat_input.setDecimals(0)
+        
 
         # прописуємо стилі всім полям одночасно
         for inp in [self.mass_input, self.kkal_input, self.prot_input, self.carbs_input, self.fat_input]:
@@ -222,6 +248,9 @@ class AddProductDialog(QDialog):
         except ValueError:
             return None
 
+class AddProductWindow(QDialog):
+    pass
+
 class EditProductDialog(QDialog):
     """Вікно для редагування записів"""
 
@@ -230,10 +259,13 @@ class EditProductDialog(QDialog):
         self.current_product_data = []
         self.new_product_data = []
 
+
         self.setWindowTitle("Редагувати продукт")
         self.setFixedSize(500,600)
 
-        self.layout = QFormLayout(self)
+        main_layout = QHBoxLayout(self)
+
+        layout = QFormLayout()
 
         self.type_name = QLineEdit()
         self.type_name.setPlaceholderText("Назва продукта")
@@ -252,6 +284,22 @@ class EditProductDialog(QDialog):
         
         self.fat_input = QLineEdit("")
         self.fat_input.setPlaceholderText("Жири: ")
+        
+        layout.addRow(self.type_name)
+        layout.addRow(self.mass_input)
+        layout.addRow(self.kkal_input)
+        layout.addRow(self.prot_input)
+        layout.addRow(self.carbs_input)
+        layout.addRow(self.fat_input)
+
+        main_layout.addLayout(layout)
+
+        self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Yes | QDialogButtonBox.StandardButton.No)
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
+        
+        main_layout.addWidget(self.buttons)
+
 
 
     
